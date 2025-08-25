@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import re
 import os
+import matplotlib.pyplot as plt
 
 # Helper function to get dataset path
 def get_dataset_path():
@@ -55,3 +56,16 @@ if "df" in st.session_state:
     else:
         filtered_df = st.session_state["df"]
     st.dataframe(filtered_df)
+
+    st.subheader("Sentiment Score by Product")
+    grouped = st.session_state["df"].groupby(["PRODUCT"])["SENTIMENT_SCORE"].mean()
+    st.bar_chart(grouped)
+
+    st.subheader(f"Sentiment Score Distribution for {product}")
+    # Create matplotlib histogram
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(filtered_df["SENTIMENT_SCORE"], bins=10, edgecolor='black', alpha=0.7)
+    ax.set_xlabel('Sentiment Score')
+    ax.set_ylabel('Frequency')
+    ax.set_title('Distribution of Sentiment Scores')
+    st.pyplot(fig)
